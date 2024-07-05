@@ -1,0 +1,3 @@
+-Run SingleThreaded.java first then run Client.java. 
+-Choose your network address and use port 7020.
+-Make a selection from the menu and record results.
