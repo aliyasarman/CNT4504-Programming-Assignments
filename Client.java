@@ -23,7 +23,7 @@ public class Client {
         Scanner in = new Scanner(System.in);
         System.out.println("Enter the Network Address");
         String networkAddress = in.nextLine();
-        System.out.println("Enter the port number.");
+        System.out.println("Enter the port number."); //port range of 1025-4998
         int port = in.nextInt();
         int numberOfRequests = 0;
 
@@ -70,7 +70,7 @@ public class Client {
                         while ((response = reader.readLine()) != null) {
                             sb.append(response).append("\n");
                         }
-                      //  System.out.println(sb);
+                        //  System.out.println(sb);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

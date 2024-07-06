@@ -10,11 +10,12 @@ public class SingleThreaded {
     public static long startTime = System.currentTimeMillis();
 
     public static void main(String[] args) {
-       int port = 7020;
         Scanner in = new Scanner(System.in);
+        System.out.println("Enter the port number."); //port range of 1025-4998
+        int port = in.nextInt();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server is listening on port 7020");
-            // curl http://localhost:7020
+            System.out.println("Server is listening on port " + port);
+            // curl http://localhost:7020 OR wget http://localhost:7020
 
             while (true) {
                 //System.out.println("test");
@@ -27,7 +28,7 @@ public class SingleThreaded {
                     String request = reader.readLine();
                     String response = handleRequest(request);
 
-                    //System.out.println(response);
+                    System.out.println(response);
 
                     OutputStream output = socket.getOutputStream();
                     PrintWriter writer = new PrintWriter(output, true);
