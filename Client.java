@@ -2,10 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -23,7 +20,7 @@ public class Client {
         Scanner in = new Scanner(System.in);
         System.out.println("Enter the Network Address");
         String networkAddress = in.nextLine();
-        System.out.println("Enter the port number."); //port range of 1025-4998
+        System.out.println("Enter the port number.");
         int port = in.nextInt();
         int numberOfRequests = 0;
 
@@ -44,14 +41,11 @@ public class Client {
             if (selection == 0) {
                 break;
             }
-            System.out.println("How many client requests will be generated? Choose between 1, 5, 10, 15, 20 and 25");
+            System.out.println("How many client requests will be generated? Choose between 1, 5, 10, 15, 20 25, and 100");
             numberOfRequests = in.nextInt();
-            if (numberOfRequests > 25 || numberOfRequests < 1) {
-                System.out.println("Invalid amount of client requests. Choose between 1, 5, 10, 15, 20 and 25");
-                continue;
-            }
-            if (numberOfRequests != 1 && numberOfRequests % 5 != 0) {
-                System.out.println("Invalid amount of client requests. Choose between 1, 5, 10, 15, 20 and 25");
+            List<Integer> acceptedVals = Arrays.asList(1, 5, 10, 15, 20, 25, 100);
+            if (!acceptedVals.contains(numberOfRequests)) {
+                System.out.println("Invalid amount of client requests. Choose between 1, 5, 10, 15, 20, 25, and 100");
                 continue;
             }
 
@@ -70,7 +64,7 @@ public class Client {
                         while ((response = reader.readLine()) != null) {
                             sb.append(response).append("\n");
                         }
-                        //  System.out.println(sb);
+                      System.out.println(sb);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

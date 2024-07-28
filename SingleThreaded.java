@@ -4,36 +4,54 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class SingleThreaded {
     public static long startTime = System.currentTimeMillis();
 
     public static void main(String[] args) {
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+
+        int port = 7020;
         Scanner in = new Scanner(System.in);
-        System.out.println("Enter the port number."); //port range of 1025-4998
-        int port = in.nextInt();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server is listening on port " + port);
-            // curl http://localhost:7020 OR wget http://localhost:7020
+            System.out.println("Server is listening on port 7020");
+            // curl http://localhost:7020
 
             while (true) {
                 //System.out.println("test");
-                try (Socket socket = serverSocket.accept()) {
-                    System.out.println("New client connected");
-                    long processStartTime = System.currentTimeMillis();
+                try {
+                    Socket socket = serverSocket.accept();
+                    executorService.submit(() -> {
+                        try (InputStream input = socket.getInputStream()) {
+                            System.out.println("New client connected");
+                            long processStartTime = System.currentTimeMillis();
 
-                    InputStream input = socket.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    String request = reader.readLine();
-                    String response = handleRequest(request);
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                            String request = reader.readLine();
+                            String response = handleRequest(request);
 
-                    System.out.println(response);
+                            //System.out.println(response);
 
-                    OutputStream output = socket.getOutputStream();
-                    PrintWriter writer = new PrintWriter(output, true);
-                    writer.write(response);
-                    writer.flush();
+                            OutputStream output = socket.getOutputStream();
+                            PrintWriter writer = new PrintWriter(output, true);
+                            writer.write(response);
+                            writer.flush();
+
+                        } catch (IOException e) {
+                            System.out.println("Client exception: " + e.getMessage());
+                            e.printStackTrace();
+                        } finally {
+                            try {
+                                socket.close();
+                            } catch (IOException e) {
+                                System.out.println("Closing exception: " + e.getMessage());
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                     //long processEndTime = System.currentTimeMillis();
                     //System.out.println("Process Request " +request + "time: " + (processEndTime-processStartTime));
                 } catch (IOException e) {
